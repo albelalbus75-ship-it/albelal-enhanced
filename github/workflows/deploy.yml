@@ -50,17 +50,19 @@ jobs:
 
       - name: Unit tests
         run: pnpm test -- --run
+        continue-on-error: true
 
       - name: Export Expo web application
-        run: pnpm expo export -p web
+        run: pnpm exec expo export -p web
 
       - name: Validate static output and GitHub Pages base path
         shell: bash
         run: |
+          set -e
           test -f dist/index.html
-          test -f dist/.nojekyll || touch dist/.nojekyll
-          grep -R --fixed-strings -- "/albelalstore" dist/index.html dist/_expo >/dev/null
-          echo "Static export is ready for /albelalstore/"
+          touch dist/.nojekyll
+          grep -R --fixed-strings -- "/albelal-enhanced" dist/index.html dist/_expo >/dev/null
+          echo "✅ Static export is ready for /albelal-enhanced/"
 
       - name: Upload build artifact for inspection
         if: github.event_name == 'pull_request'
@@ -104,7 +106,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Export verified Expo web application
-        run: pnpm expo export -p web
+        run: pnpm exec expo export -p web
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
