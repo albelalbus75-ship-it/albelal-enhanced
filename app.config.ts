@@ -61,7 +61,7 @@ const publicRuntime = {
 
 const config = {
   name: env.appName,
-  logoUrl: "https://albelalbus75-ship-it.github.io/albelalstore/favicon.png",
+  logoUrl: "",
   slug: env.appSlug,
   version: "1.0.0",
   extra: publicRuntime,
@@ -72,9 +72,9 @@ const config = {
   ios: {
     supportsTablet: true,
     bundleIdentifier: env.iosBundleId,
-    "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
+    },
   },
   android: {
     adaptiveIcon: {
@@ -144,7 +144,7 @@ const config = {
     ],
   ],
   experiments: {
-    baseUrl: "/albelalstore",
+    baseUrl: "/albelal-enhanced",
     typedRoutes: true,
     reactCompiler: true,
   },
