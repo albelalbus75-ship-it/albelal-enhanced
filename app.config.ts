@@ -109,6 +109,12 @@ const config = {
         microphonePermission: "Allow $(PRODUCT_NAME) to access your microphone.",
       },
     ],
+ [
+  "expo-camera",
+  {
+    cameraPermission: "السماح للتطبيق بالوصول إلى الكاميرا لمسح الباركود"
+  }
+],
     [
       "expo-video",
       {
