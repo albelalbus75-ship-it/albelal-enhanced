@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ProductCard } from "../../components/ProductCard";
 import { EmptyState } from "../../components/EmptyState";
 import { ProductDetail } from "../../components/ProductDetail";
-import { Header } from "../../components/Header"; // 👈 استيراد الرأس الموحد
+import { Header } from "../../components/Header";
 import { categories, products } from "../../constants/mockData";
 import { Product } from "../../constants/types";
 import { useCart } from "../../context/CartContext";
@@ -24,39 +24,43 @@ export default function SalesScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
-      {/* 👈 إضافة الرأس هنا ليظهر في كل الشاشات */}
       <Header />
 
-      <View style={styles.screenHeading}>
-        <View>
-          <Text style={styles.screenTitle}>المنتجات</Text>
-          <Text style={styles.screenSubtitle}>{filteredProducts.length} صنف متاح للبيع</Text>
-        </View>
-        <Pressable style={styles.iconButton} onPress={() => { setQuery(""); setCategory("الكل"); }}>
-          <Ionicons name="refresh-outline" size={21} color="#132238" />
+      {/* 👇 شريط صغير مدمج: العنوان + زر التحديث + البحث في سطر واحد */}
+      <View style={styles.compactBar}>
+        <Text style={styles.compactTitle}>المنتجات</Text>
+        <Text style={styles.compactCount}>{filteredProducts.length} صنف</Text>
+        <Pressable style={styles.compactIconButton} onPress={() => { setQuery(""); setCategory("الكل"); }}>
+          <Ionicons name="refresh-outline" size={16} color="#0F172A" />
         </Pressable>
       </View>
 
+      {/* 👇 صندوق البحث مباشرة بدون عنوان كبير */}
       <View style={styles.searchBox}>
-        <Ionicons name="search-outline" size={20} color="#7B8799" />
-        <TextInput
-          value={query}
-          onChangeText={setQuery}
-          placeholder="ابحث باسم المنتج أو القسم"
-          placeholderTextColor="#98A2B2"
-          style={styles.searchInput}
-          textAlign="right"
+        <Ionicons name="search-outline" size={18} color="#64748B" />
+        <TextInput 
+          value={query} 
+          onChangeText={setQuery} 
+          placeholder="ابحث باسم المنتج أو القسم" 
+          placeholderTextColor="#94A3B8" 
+          style={styles.searchInput} 
+          textAlign="right" 
         />
         <Pressable onPress={() => setQuery("")}>
-          <Ionicons name="close-circle" size={18} color={query ? "#7B8799" : "transparent"} />
+          <Ionicons name="close-circle" size={16} color={query ? "#64748B" : "transparent"} />
         </Pressable>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipsRow}>
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false} 
+        contentContainerStyle={styles.chipsRow}
+        style={styles.chipsScroll}
+      >
         {categories.map((item) => (
-          <Pressable
-            key={item}
-            onPress={() => setCategory(item)}
+          <Pressable 
+            key={item} 
+            onPress={() => setCategory(item)} 
             style={[styles.chip, category === item && styles.chipActive]}
           >
             <Text style={[styles.chipText, category === item && styles.chipTextActive]}>{item}</Text>
@@ -64,13 +68,12 @@ export default function SalesScreen() {
         ))}
       </ScrollView>
 
-      {/* 👈 إصلاح المشكلة: وضع القائمة داخل View بـ flex: 1 لمنع التداخل */}
       <View style={{ flex: 1 }}>
         {selectedProduct ? (
-          <ProductDetail
-            product={selectedProduct}
-            onAdd={() => { addToCart(selectedProduct); setSelectedProduct(null); }}
-            onClose={() => setSelectedProduct(null)}
+          <ProductDetail 
+            product={selectedProduct} 
+            onAdd={() => { addToCart(selectedProduct); setSelectedProduct(null); }} 
+            onClose={() => setSelectedProduct(null)} 
           />
         ) : (
           <FlatList
@@ -78,19 +81,19 @@ export default function SalesScreen() {
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.productList}
             renderItem={({ item }) => (
-              <ProductCard
-                product={item}
-                onAdd={() => addToCart(item)}
-                onOpen={() => setSelectedProduct(item)}
+              <ProductCard 
+                product={item} 
+                onAdd={() => addToCart(item)} 
+                onOpen={() => setSelectedProduct(item)} 
               />
             )}
             ListEmptyComponent={
-              <EmptyState
-                icon="search-outline"
-                title="لم نعثر على منتجات"
-                body="جرّب كلمة بحث مختلفة أو امسح التصفية."
-                action="مسح البحث"
-                onPress={() => { setQuery(""); setCategory("الكل"); }}
+              <EmptyState 
+                icon="search-outline" 
+                title="لم نعثر على منتجات" 
+                body="جرّب كلمة بحث مختلفة أو امسح التصفية." 
+                action="مسح البحث" 
+                onPress={() => { setQuery(""); setCategory("الكل"); }} 
               />
             }
             showsVerticalScrollIndicator={false}
@@ -102,53 +105,79 @@ export default function SalesScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#F7F8FA" },
-  screenHeading: {
-    paddingHorizontal: 18,
-    paddingTop: 22,
-    paddingBottom: 12,
+  safe: { flex: 1, backgroundColor: "#F1F5F9" },
+  
+  // 👇 شريط صغير مدمج (بدل من screenHeading الضخم)
+  compactBar: {
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 6,
     flexDirection: "row-reverse",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 8,
   },
-  screenTitle: { color: "#132238", fontSize: 25, fontWeight: "900", textAlign: "right" },
-  screenSubtitle: { color: "#8290A3", fontSize: 12, marginTop: 5, textAlign: "right" },
-  iconButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
-    backgroundColor: "#FFFFFF",
+  compactTitle: { 
+    color: "#0F172A", 
+    fontSize: 16, 
+    fontWeight: "900", 
+    textAlign: "right" 
+  },
+  compactCount: { 
+    color: "#64748B", 
+    fontSize: 11, 
+    fontWeight: "600",
+    flex: 1,
+    textAlign: "right",
+    marginTop: 2,
+  },
+  compactIconButton: { 
+    width: 32, 
+    height: 32, 
+    borderRadius: 10, 
+    backgroundColor: "#FFFFFF", 
+    alignItems: "center", 
+    justifyContent: "center", 
+    borderWidth: 1, 
+    borderColor: "#E2E8F0" 
+  },
+
+  searchBox: { 
+    marginHorizontal: 16, 
+    marginTop: 4,
+    height: 40, 
+    borderRadius: 10, 
+    backgroundColor: "#FFFFFF", 
+    borderWidth: 1, 
+    borderColor: "#E2E8F0", 
+    paddingHorizontal: 12, 
+    flexDirection: "row-reverse", 
+    alignItems: "center", 
+    gap: 8 
+  },
+  searchInput: { flex: 1, color: "#0F172A", fontSize: 12 },
+
+  chipsScroll: {
+    maxHeight: 46,
+  },
+  chipsRow: { 
+    paddingHorizontal: 16, 
+    gap: 6, 
+    paddingVertical: 8,
     alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#EDF0F4",
   },
-  searchBox: {
-    marginHorizontal: 18,
-    height: 49,
-    borderRadius: 15,
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E7EBF0",
-    paddingHorizontal: 13,
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 9,
+  chip: { 
+    paddingHorizontal: 12, 
+    height: 30, 
+    borderRadius: 9, 
+    alignItems: "center", 
+    justifyContent: "center", 
+    backgroundColor: "#FFFFFF", 
+    borderWidth: 1, 
+    borderColor: "#E2E8F0" 
   },
-  searchInput: { flex: 1, color: "#132238", fontSize: 13 },
-  chipsRow: { paddingHorizontal: 18, gap: 8, paddingVertical: 14 },
-  chip: {
-    paddingHorizontal: 15,
-    height: 36,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E7EBF0",
-  },
-  chipActive: { backgroundColor: "#132238", borderColor: "#132238" },
-  chipText: { color: "#69768A", fontSize: 12, fontWeight: "700" },
+  chipActive: { backgroundColor: "#0F172A", borderColor: "#0F172A" },
+  chipText: { color: "#64748B", fontSize: 11, fontWeight: "700" },
   chipTextActive: { color: "#FFFFFF" },
-  productList: { paddingHorizontal: 18, paddingBottom: 112, gap: 10 },
+
+  productList: { paddingHorizontal: 16, paddingBottom: 100, gap: 8 },
 });
