@@ -1,4 +1,3 @@
-json
 {
   "name": "app-template",
   "version": "1.0.0",
@@ -7,11 +6,9 @@ json
   "scripts": {
     "dev": "concurrently -k \"pnpm dev:server\" \"pnpm dev:metro\"",
     "dev:server": "cross-env PORT=3000 NODE_ENV=development tsx watch server/_core/index.ts",
-    "dev:metro": "cross-env EXPO_USE_METRO_WORKSPACE_ROOT=1 EXPO_PORT=8081 expo start --web --port 8081",
-    "build": "pnpm build:server",
-    "build:server": "esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js",
-    "build:web": "expo export --platform web",
-    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "dev:metro": "cross-env EXPO_USE_METRO_WORKSPACE_ROOT=1 EXPO_PORT=8081 npx expo start --web --port 8081",
+    "build": "esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc --noEmit",
     "lint": "expo lint",
     "format": "prettier --write .",
@@ -19,9 +16,6 @@ json
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web",
-    "web:clean": "expo export --platform web --clear",
-    "doctor": "expo-doctor",
     "qr": "node scripts/generate_qr.mjs"
   },
   "dependencies": {
