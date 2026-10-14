@@ -11,6 +11,8 @@ import { ThemeProvider } from "@/lib/theme-provider";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { trpc, createTRPCClient } from "@/lib/trpc";
 import { initManusRuntime } from "@/lib/_core/manus-runtime";
+// 👇 استيراد مزود السلة
+import { CartProvider } from "../context/CartContext";
 
 export const unstable_settings = { anchor: "index" };
 
@@ -26,14 +28,17 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <SafeAreaProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <trpc.Provider client={trpcClient} queryClient={queryClient}>
-            <QueryClientProvider client={queryClient}>
-              <Stack screenOptions={{ headerShown: false }} />
-              <StatusBar style="dark" />
-            </QueryClientProvider>
-          </trpc.Provider>
-        </GestureHandlerRootView>
+        {/* 👇 تغليف التطبيق بـ CartProvider */}
+        <CartProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <trpc.Provider client={trpcClient} queryClient={queryClient}>
+              <QueryClientProvider client={queryClient}>
+                <Stack screenOptions={{ headerShown: false }} />
+                <StatusBar style="dark" />
+              </QueryClientProvider>
+            </trpc.Provider>
+          </GestureHandlerRootView>
+        </CartProvider>
       </SafeAreaProvider>
     </ThemeProvider>
   );
