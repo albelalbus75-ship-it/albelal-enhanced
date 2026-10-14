@@ -14,12 +14,12 @@ export function Header() {
       <View style={styles.headerIdentity}>
         <BrandMark />
         <View>
-          <Text style={styles.brandName}>مركز البلال</Text>
+          <Text style={styles.brandName}>مركز الفيصل</Text>
           <Text style={styles.brandSub}>كاشير المبيعات</Text>
         </View>
       </View>
       <Pressable style={styles.cartHeaderButton} onPress={() => router.push("/cart")} accessibilityLabel="فتح سلة البيع">
-        <Ionicons name="cart-outline" size={23} color="#132238" />
+        <Ionicons name="cart-outline" size={20} color="#0F172A" />
         {itemCount > 0 && <View style={styles.badge}><Text style={styles.badgeText}>{itemCount}</Text></View>}
       </Pressable>
     </View>
@@ -27,11 +27,11 @@ export function Header() {
 }
 
 const styles = StyleSheet.create({
-  header: { height: 76, paddingHorizontal: 18, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between", backgroundColor: "#FFFFFF", borderBottomWidth: 1, borderBottomColor: "#EDF0F4" },
-  headerIdentity: { flexDirection: "row-reverse", alignItems: "center", gap: 10 },
-  brandName: { color: "#132238", fontSize: 16, fontWeight: "800", textAlign: "right" },
-  brandSub: { color: "#7B8799", fontSize: 11, marginTop: 2, textAlign: "right" },
-  cartHeaderButton: { width: 43, height: 43, borderRadius: 14, backgroundColor: "#F2F5F7", alignItems: "center", justifyContent: "center", position: "relative" },
-  badge: { position: "absolute", top: -4, left: -4, width: 19, height: 19, borderRadius: 10, backgroundColor: "#F28D54", alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#FFFFFF" },
-  badgeText: { color: "#FFFFFF", fontSize: 10, fontWeight: "800" },
+  header: { height: 60, paddingHorizontal: 16, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between", backgroundColor: "#FFFFFF", borderBottomWidth: 1, borderBottomColor: "#E2E8F0" },
+  headerIdentity: { flexDirection: "row-reverse", alignItems: "center", gap: 8 },
+  brandName: { color: "#0F172A", fontSize: 14, fontWeight: "800", textAlign: "right" },
+  brandSub: { color: "#64748B", fontSize: 10, marginTop: 1, textAlign: "right" },
+  cartHeaderButton: { width: 38, height: 38, borderRadius: 12, backgroundColor: "#F1F5F9", alignItems: "center", justifyContent: "center", position: "relative" },
+  badge: { position: "absolute", top: -4, left: -4, width: 18, height: 18, borderRadius: 9, backgroundColor: "#F97316", alignItems: "center", justifyContent: "center", borderWidth: 1.5, borderColor: "#FFFFFF" },
+  badgeText: { color: "#FFFFFF", fontSize: 9, fontWeight: "800" },
 });
