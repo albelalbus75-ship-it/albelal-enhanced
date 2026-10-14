@@ -38,6 +38,7 @@ jobs:
       - name: Build Web
         run: npx expo export --platform web
 
+      # 👇 هذه هي الخطوة المهمة التي كانت ناقصة
       - name: Add .nojekyll
         run: touch dist/.nojekyll
 
