@@ -36,7 +36,9 @@ export default function HomeScreen() {
           <QuickAction icon="pricetags-outline" label="المنتجات" detail={`${products.length} أصناف`} onPress={() => router.push("/sales")} />
           <QuickAction icon="cart-outline" label="سلة البيع" detail={useCart().cart.length ? "عناصر" : "فارغة الآن"} onPress={() => router.push("/cart")} />
           <QuickAction icon="bar-chart-outline" label="التقارير" detail="ملخص اليوم" onPress={() => router.push("/reports")} />
-          <QuickAction icon="people-outline" label="الحسابات" detail="4 عملاء" onPress={() => router.push("/accounts")} />
+       <QuickAction icon="people-outline" label="الحسابات" detail="4 عملاء" onPress={() => router.push("/accounts")} />
+<QuickAction icon="add-circle-outline" label="صنف جديد" detail="إضافة منتج" onPress={() => router.push("/add-product")} />
+<QuickAction icon="folder-open-outline" label="قسم جديد" detail="إدارة الأقسام" onPress={() => router.push("/add-category")} />
         </View>
 
         <SectionTitle title="الأكثر مبيعًا" action="عرض الكل" onPress={() => router.push("/sales")} />
