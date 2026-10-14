@@ -1,23 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Modal } from "react-native";
+import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { CameraView, useCameraPermissions } from "expo-camera";
+import * as ImagePicker from "expo-image-picker";
 import { useProducts } from "../context/ProductContext";
 import { Header } from "../components/Header";
 
 export default function AddProductScreen() {
   const router = useRouter();
   const { categories, addProduct } = useProducts();
-  const [permission, requestPermission] = useCameraPermissions();
   
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [category, setCategory] = useState(categories[1] || "أدوات منزلية");
   const [barcode, setBarcode] = useState("");
-  const [showScanner, setShowScanner] = useState(false);
+  const [barcodeImage, setBarcodeImage] = useState<string | null>(null);
   const [notice, setNotice] = useState("");
 
   const handleSave = () => {
@@ -32,8 +31,8 @@ export default function AddProductScreen() {
       category: category,
       price: parseFloat(price) || 0,
       stock: parseInt(stock) || 0,
-      icon: "cube-outline", // أيقونة افتراضية
-      color: "#E2E8F0", // لون افتراضي
+      icon: "cube-outline",
+      color: "#E2E8F0",
       note: barcode ? `باركود: ${barcode}` : undefined,
     });
 
@@ -43,9 +42,25 @@ export default function AddProductScreen() {
     }, 1500);
   };
 
-  const handleBarcodeScanned = ({ data }: { data: string }) => {
-    setBarcode(data);
-    setShowScanner(false);
+  // 👇 استخدام الكاميرا الأصلية للهاتف عبر expo-image-picker
+  const handleTakePhoto = async () => {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert("تنبيه", "نحتاج إذن الكاميرا لتصوير الباركود");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 0.5,
+      allowsEditing: false,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setBarcodeImage(result.assets[0].uri);
+      setNotice("تم التقاط الصورة بنجاح. أدخل رقم الباركود يدوياً.");
+      setTimeout(() => setNotice(""), 3000);
+    }
   };
 
   return (
@@ -63,83 +78,82 @@ export default function AddProductScreen() {
         <Text style={styles.title}>إضافة صنف جديد</Text>
         <Text style={styles.subtitle}>أدخل تفاصيل المنتج واضغط حفظ</Text>
 
-        {/* اسم المنتج */}
         <Text style={styles.label}>اسم المنتج *</Text>
-        <TextInput value={name} onChangeText={setName} placeholder="مثال: طقم قدور جرانيت" placeholderTextColor="#94A3B8" style={styles.input} textAlign="right" />
+        <TextInput 
+          value={name} 
+          onChangeText={setName} 
+          placeholder="مثال: طقم قدور جرانيت" 
+          placeholderTextColor="#94A3B8" 
+          style={styles.input} 
+          textAlign="right" 
+        />
 
-        {/* السعر والمخزون */}
         <View style={styles.row}>
           <View style={styles.half}>
             <Text style={styles.label}>السعر (ريال) *</Text>
-            <TextInput value={price} onChangeText={setPrice} placeholder="0.00" keyboardType="numeric" placeholderTextColor="#94A3B8" style={styles.input} textAlign="right" />
+            <TextInput 
+              value={price} 
+              onChangeText={setPrice} 
+              placeholder="0.00" 
+              keyboardType="numeric" 
+              placeholderTextColor="#94A3B8" 
+              style={styles.input} 
+              textAlign="right" 
+            />
           </View>
           <View style={styles.half}>
             <Text style={styles.label}>الكمية بالمخزون</Text>
-            <TextInput value={stock} onChangeText={setStock} placeholder="0" keyboardType="numeric" placeholderTextColor="#94A3B8" style={styles.input} textAlign="right" />
+            <TextInput 
+              value={stock} 
+              onChangeText={setStock} 
+              placeholder="0" 
+              keyboardType="numeric" 
+              placeholderTextColor="#94A3B8" 
+              style={styles.input} 
+              textAlign="right" 
+            />
           </View>
         </View>
 
-        {/* القسم */}
         <Text style={styles.label}>القسم</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipsRow}>
           {categories.filter(c => c !== "الكل").map((item) => (
-            <Pressable key={item} onPress={() => setCategory(item)} style={[styles.chip, category === item && styles.chipActive]}>
+            <Pressable 
+              key={item} 
+              onPress={() => setCategory(item)} 
+              style={[styles.chip, category === item && styles.chipActive]}
+            >
               <Text style={[styles.chipText, category === item && styles.chipTextActive]}>{item}</Text>
             </Pressable>
           ))}
         </ScrollView>
 
-        {/* الباركود */}
         <Text style={styles.label}>الباركود</Text>
         <View style={styles.barcodeRow}>
-          <TextInput value={barcode} onChangeText={setBarcode} placeholder="أدخل الباركود يدوياً أو صوره" placeholderTextColor="#94A3B8" style={[styles.input, { flex: 1 }]} textAlign="right" />
-          <Pressable style={styles.scanButton} onPress={() => {
-            if (!permission?.granted) {
-              requestPermission();
-            } else {
-              setShowScanner(true);
-            }
-          }}>
+          <TextInput 
+            value={barcode} 
+            onChangeText={setBarcode} 
+            placeholder="أدخل رقم الباركود" 
+            placeholderTextColor="#94A3B8" 
+            style={[styles.input, { flex: 1 }]} 
+            textAlign="right" 
+          />
+          <Pressable style={styles.scanButton} onPress={handleTakePhoto}>
             <Ionicons name="camera-outline" size={22} color="#FFFFFF" />
           </Pressable>
         </View>
 
-        {/* زر الحفظ */}
+        {barcodeImage && (
+          <View style={styles.imagePreview}>
+            <Text style={styles.imageLabel}>✓ تم التقاط صورة الباركود</Text>
+          </View>
+        )}
+
         <Pressable style={styles.saveButton} onPress={handleSave}>
           <Ionicons name="checkmark-circle-outline" size={22} color="#FFFFFF" />
           <Text style={styles.saveButtonText}>حفظ المنتج</Text>
         </Pressable>
       </ScrollView>
-
-      {/* نافذة الكاميرا لمسح الباركود */}
-      <Modal visible={showScanner} animationType="slide">
-        <View style={styles.scannerContainer}>
-          {permission?.granted ? (
-            <CameraView
-              style={StyleSheet.absoluteFillObject}
-              facing="back"
-              onBarcodeScanned={handleBarcodeScanned}
-              barcodeScannerSettings={{
-                barcodeTypes: ["qr", "ean13", "ean8", "code128", "code39", "upc_a"],
-              }}
-            />
-          ) : (
-            <View style={styles.permissionView}>
-              <Text style={styles.permissionText}>نحتاج إذن الكاميرا لمسح الباركود</Text>
-              <Pressable style={styles.permissionButton} onPress={requestPermission}>
-                <Text style={styles.permissionButtonText}>منح الإذن</Text>
-              </Pressable>
-            </View>
-          )}
-          
-          {/* إطار المسح */}
-          <View style={styles.scanFrame} />
-          
-          <Pressable style={styles.closeScanner} onPress={() => setShowScanner(false)}>
-            <Ionicons name="close" size={28} color="#FFFFFF" />
-          </Pressable>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }
@@ -164,11 +178,6 @@ const styles = StyleSheet.create({
   saveButtonText: { color: "#FFFFFF", fontSize: 15, fontWeight: "800" },
   notice: { marginHorizontal: 16, marginTop: 8, padding: 10, borderRadius: 12, backgroundColor: "#CCFBF1", flexDirection: "row-reverse", alignItems: "center", gap: 6 },
   noticeText: { flex: 1, color: "#0F766E", fontSize: 12, fontWeight: "700", textAlign: "right" },
-  scannerContainer: { flex: 1, backgroundColor: "#000" },
-  permissionView: { flex: 1, alignItems: "center", justifyContent: "center", padding: 20 },
-  permissionText: { color: "#FFFFFF", fontSize: 16, textAlign: "center", marginBottom: 20 },
-  permissionButton: { backgroundColor: "#0D9488", paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12 },
-  permissionButtonText: { color: "#FFFFFF", fontSize: 14, fontWeight: "800" },
-  scanFrame: { position: "absolute", top: "30%", left: "10%", right: "10%", height: 200, borderWidth: 2, borderColor: "#0D9488", borderRadius: 20, backgroundColor: "transparent" },
-  closeScanner: { position: "absolute", top: 60, right: 20, width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(0,0,0,0.5)", alignItems: "center", justifyContent: "center" },
+  imagePreview: { marginTop: 10, padding: 12, borderRadius: 10, backgroundColor: "#DCFCE7", borderWidth: 1, borderColor: "#86EFAC" },
+  imageLabel: { color: "#15803D", fontSize: 12, fontWeight: "800", textAlign: "right" },
 });
