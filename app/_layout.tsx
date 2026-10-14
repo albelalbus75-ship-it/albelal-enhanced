@@ -5,16 +5,15 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
-import { Platform, I18nManager } from "react-native";
+import { Platform, I18nManager, View, StyleSheet } from "react-native";
 import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { trpc, createTRPCClient } from "@/lib/trpc";
 import { initManusRuntime } from "@/lib/_core/manus-runtime";
-// 👇 استيراد مزود السلة
 import { CartProvider } from "../context/CartContext";
 
-export const unstable_settings = { anchor: "(tabs)" };
+export const unstable_settings = { anchor: "index" };
 
 export default function RootLayout() {
   const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } } }));
@@ -28,13 +27,16 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <SafeAreaProvider>
-        {/* 👇 تغليف التطبيق بـ CartProvider */}
         <CartProvider>
-          <GestureHandlerRootView style={{ flex: 1 }}>
+          {/* 👇 الخلفية الرمادية حول التطبيق على الويب */}
+          <GestureHandlerRootView style={[styles.root, Platform.OS === 'web' && styles.webRoot]}>
             <trpc.Provider client={trpcClient} queryClient={queryClient}>
               <QueryClientProvider client={queryClient}>
-                <Stack screenOptions={{ headerShown: false }} />
-                <StatusBar style="dark" />
+                {/* 👇 إطار الهاتف الوهمي على الويب */}
+                <View style={Platform.OS === 'web' ? styles.webContainer : styles.nativeContainer}>
+                  <Stack screenOptions={{ headerShown: false }} />
+                  <StatusBar style="dark" />
+                </View>
               </QueryClientProvider>
             </trpc.Provider>
           </GestureHandlerRootView>
@@ -43,3 +45,31 @@ export default function RootLayout() {
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+  webRoot: {
+    // خلفية رمادية فاتحة تظهر حول التطبيق على الكمبيوتر
+    backgroundColor: "#E5E7EB", 
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  nativeContainer: {
+    flex: 1,
+  },
+  webContainer: {
+    // إطار الهاتف الوهمي
+    flex: 1,
+    width: "100%",
+    maxWidth: 480, // عرض شاشة هاتف تقريبي
+    backgroundColor: "#F7F8FA",
+    // إضافة ظل خفيف لتمييز التطبيق عن الخلفية
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 15,
+    elevation: 5,
+  },
+});
