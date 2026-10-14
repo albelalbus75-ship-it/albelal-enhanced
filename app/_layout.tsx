@@ -13,7 +13,7 @@ import { trpc, createTRPCClient } from "@/lib/trpc";
 import { initManusRuntime } from "@/lib/_core/manus-runtime";
 import { CartProvider } from "../context/CartContext";
 
-export const unstable_settings = { anchor: "index" };
+export const unstable_settings = { anchor: "(tabs)" };
 
 export default function RootLayout() {
   const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } } }));
