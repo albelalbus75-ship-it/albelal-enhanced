@@ -1,66 +1,63 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 export default function ManagementScreen() {
   const router = useRouter();
 
-  const menuItems = [
+  const managementItems = [
     {
-      title: 'شاشة الأصناف والمنتجات',
+      title: 'إدارة الأصناف والمنتجات',
       subtitle: 'عرض الأصناف، التعديل، واستيراد أكسل',
-      icon: 'package',
-      color: 'bg-emerald-50 text-emerald-600',
+      icon: 'cube-outline',
+      color: '#19B7A5',
       route: '/items',
     },
     {
-      title: 'شاشة الأقسام (الفئات)',
-      subtitle: 'إدارة وتصنيف أقسام المتجر',
-      icon: 'folder',
-      color: 'bg-amber-50 text-amber-600',
+      title: 'إدارة الأقسام (الفئات)',
+      subtitle: 'تصنيف وترتيب أقسام المتجر',
+      icon: 'folder-outline',
+      color: '#F28D54',
       route: '/add-category',
     },
     {
-      title: 'شاشة وحدات القياس',
-      subtitle: 'حبة، كرتون، درزن، طقم، كجم',
-      icon: 'layers',
-      color: 'bg-blue-50 text-blue-600',
+      title: 'إدارة وحدات القياس',
+      subtitle: 'حبة، كرتون، طقم، درزن، كجم',
+      icon: 'layers-outline',
+      color: '#3B82F6',
       route: '/units',
     },
     {
-      title: 'إعدادات النظام',
-      subtitle: 'إعدادات المتجر، الطابعة، والنسخ الاحتياطي',
-      icon: 'settings',
-      color: 'bg-slate-100 text-slate-700',
+      title: 'إعدادات النظام والربط',
+      subtitle: 'إعدادات المتجر والطابعة والنسخ الاحتياطي',
+      icon: 'settings-outline',
+      color: '#64748B',
       route: '/settings',
     },
   ];
 
   return (
-    <View className="flex-1 bg-slate-100">
-      <!-- Header -->
-      <View className="bg-white px-5 py-4 border-b border-slate-200 pt-12">
-        <Text className="text-lg font-bold text-slate-800 text-right">لوحة الإدارة والتهيئة</Text>
-        <Text className="text-xs text-slate-500 text-right mt-0.5">إدارة بيانات النظام والأصناف والإعدادات</Text>
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>لوحة الإدارة والتهيئة</Text>
+        <Text style={styles.headerSubtitle}>إدارة بيانات النظام والأصناف والإعدادات</Text>
       </View>
 
-      <ScrollView className="flex-1 p-4 space-y-3">
-        {menuItems.map((item, index) => (
+      <ScrollView contentContainerStyle={styles.content}>
+        {managementItems.map((item, index) => (
           <TouchableOpacity
             key={index}
+            style={styles.card}
             onPress={() => router.push(item.route as any)}
-            className="bg-white p-4 rounded-2xl border border-slate-200 flex-row items-center justify-between mb-3 shadow-sm"
           >
-            <Feather name="chevron-left" size={20} color="#94a3b8" />
-            <View className="flex-row items-center gap-3">
-              <View className="items-end">
-                <Text className="text-sm font-bold text-slate-800">{item.title}</Text>
-                <Text className="text-[11px] text-slate-500 mt-0.5">{item.subtitle}</Text>
-              </View>
-              <View className={`w-11 h-11 rounded-xl items-center justify-center ${item.color.split(' ')[0]}`}>
-                <Feather name={item.icon as any} size={22} className={item.color.split(' ')[1]} />
-              </View>
+            <View style={styles.cardInfo}>
+              <Text style={styles.cardTitle}>{item.title}</Text>
+              <Text style={styles.cardSubtitle}>{item.subtitle}</Text>
+            </View>
+            <View style={[styles.iconContainer, { backgroundColor: `${item.color}15` }]}>
+              <Ionicons name={item.icon as any} size={24} color={item.color} />
             </View>
           </TouchableOpacity>
         ))}
@@ -68,3 +65,38 @@ export default function ManagementScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#F7F8FA' },
+  header: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E9EDF2',
+  },
+  headerTitle: { fontSize: 18, fontWeight: '800', color: '#1E293B', textAlign: 'right' },
+  headerSubtitle: { fontSize: 12, color: '#64748B', textAlign: 'right', marginTop: 2 },
+  content: { padding: 16 },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E9EDF2',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  cardInfo: { flex: 1, alignItems: 'flex-end', marginRight: 12 },
+  cardTitle: { fontSize: 14, fontWeight: '700', color: '#1E293B' },
+  cardSubtitle: { fontSize: 11, color: '#64748B', marginTop: 2 },
+  iconContainer: { width: 44, height: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+});
