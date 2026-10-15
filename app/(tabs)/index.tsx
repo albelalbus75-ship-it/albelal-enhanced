@@ -1,78 +1,105 @@
-import { Ionicons } from "@expo/vector-icons";
-import { ScrollView, Text, View, Pressable, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import { Header } from "../../components/Header";
-import { SectionTitle } from "../../components/SectionTitle";
-import { QuickAction } from "../../components/QuickAction";
-import { products, money } from "../../constants/mockData";
-import { useCart } from "../../context/CartContext";
+import React from 'react';
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { notice } = useCart();
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
-      <Header />
-      {notice ? <View style={styles.notice}><Ionicons name="checkmark-circle" size={18} color="#0D9488" /><Text style={styles.noticeText}>{notice}</Text></View> : null}
+    <View className="flex-1 bg-slate-100">
+      
+      {/* Header / الشريط العلوي */}
+      <View className="bg-white px-5 py-3.5 border-b border-slate-200/80 flex-row items-center justify-between pt-12 shadow-sm">
+        <TouchableOpacity className="w-10 h-10 rounded-xl bg-slate-100 items-center justify-center">
+          <Feather name="shopping-cart" size={20} color="#475569" />
+        </TouchableOpacity>
 
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Hero Section - أكثر إحكاماً */}
-        <View style={styles.hero}>
-          <View style={styles.heroCopy}>
-            <Text style={styles.eyebrow}>وردية اليوم • الأربعاء 14 أكتوبر</Text>
-            <Text style={styles.heroTitle}>خلّ البيع أسرع،{"\n"}<Text style={styles.heroAccent}>والحساب أوضح.</Text></Text>
-            <Text style={styles.heroBody}>كل ما تحتاجه لإتمام عملية بيع مرتبة من شاشة واحدة.</Text>
-            <Pressable style={styles.primaryButton} onPress={() => router.push("/sales")}>
-              <Text style={styles.primaryButtonText}>ابدأ بيعًا جديدًا</Text>
-              <Ionicons name="arrow-back" size={16} color="#FFFFFF" />
-            </Pressable>
+        <View className="flex-row items-center gap-2.5">
+          <View className="items-end">
+            <Text className="text-sm font-bold text-slate-800 leading-tight">مركز الفيصل</Text>
+            <Text className="text-[11px] text-slate-500">كاشير المبيعات</Text>
+          </View>
+          <View className="w-10 h-10 rounded-xl bg-slate-900 items-center justify-center shadow-sm">
+            <MaterialCommunityIcons name="store" size={22} color="#d4af37" />
+          </View>
+        </View>
+      </View>
+
+      {/* المحتوى القابل للتمرير */}
+      <ScrollView className="flex-1 px-4 pt-4 pb-24" showsVerticalScrollIndicator={false}>
+        
+        {/* البانر الرئيسي الترحيبي */}
+        <View className="bg-slate-900 rounded-2xl p-5 text-white shadow-lg mb-5 border border-slate-800">
+          <Text className="text-slate-400 text-[11px] font-semibold mb-2">
+            ورديّة اليوم • الأربعاء 14 أكتوبر
+          </Text>
+          <Text className="text-xl font-extrabold text-white leading-snug">
+            خَلّ البيع أسرع،{'\n'}
+            <Text className="text-emerald-500">والحساب أوضح.</Text>
+          </Text>
+          <Text className="text-xs text-slate-300 mt-2 leading-relaxed">
+            كل ما تحتاجه لإتمام عملية بيع مرتبة من شاشة واحدة.
+          </Text>
+          
+          <TouchableOpacity 
+            onPress={() => router.push('/add-product')}
+            className="mt-4 bg-emerald-600 self-start px-4 py-2 rounded-xl flex-row items-center gap-2 shadow-md"
+          >
+            <Text className="text-white text-xs font-bold">ابدأ بيعاً جديداً</Text>
+            <Feather name="arrow-left" size={16} color="white" />
+          </TouchableOpacity>
+        </View>
+
+        {/* أقسام المتجر (الفئات الرئيسية) */}
+        <View className="mb-8">
+          <View className="flex-row items-center justify-between mb-3 px-1">
+            <Text className="text-base font-bold text-slate-800">أقسام المتجر (الفئات)</Text>
+            <TouchableOpacity onPress={() => router.push('/add-category')}>
+              <Text className="text-xs text-emerald-600 font-bold">إدارة الأقسام</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* شبكة الأقسام */}
+          <View className="flex-row flex-wrap justify-between gap-3">
+            
+            {/* قسم 1 */}
+            <View className="w-[48%] bg-white border-2 border-amber-200 rounded-2xl p-3 items-center text-center shadow-sm mb-2">
+              <View className="w-full h-32 bg-slate-50 rounded-xl overflow-hidden mb-3 items-center justify-center p-2">
+                <Image 
+                  source={{ uri: 'https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?auto=format&fit=crop&w=300&q=80' }} 
+                  className="w-full h-full resizeMode-contain" 
+                  resizeMode="contain"
+                />
+              </View>
+              <Text className="text-xs font-bold text-slate-800 mb-1 text-center">الأدوات والتراثيات</Text>
+              <Text className="text-[10px] text-slate-500 mb-3 text-center">دِلال وأواني ضيافة</Text>
+              <TouchableOpacity className="w-full border border-amber-400 py-1.5 rounded-xl items-center bg-amber-50/50">
+                <Text className="text-[11px] font-bold text-slate-800">استكشف القسم</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* قسم 2 */}
+            <View className="w-[48%] bg-white border-2 border-amber-200 rounded-2xl p-3 items-center text-center shadow-sm mb-2">
+              <View className="w-full h-32 bg-slate-50 rounded-xl overflow-hidden mb-3 items-center justify-center p-2">
+                <Image 
+                  source={{ uri: 'https://images.unsplash.com/photo-1517668808822-9eaa03afd2af?auto=format&fit=crop&w=300&q=80' }} 
+                  className="w-full h-full" 
+                  resizeMode="contain"
+                />
+              </View>
+              <Text className="text-xs font-bold text-slate-800 mb-1 text-center">الأجهزة الحديثة</Text>
+              <Text className="text-[10px] text-slate-500 mb-3 text-center">صانعات القهوة والشوايات</Text>
+              <TouchableOpacity className="w-full border border-amber-400 py-1.5 rounded-xl items-center bg-amber-50/50">
+                <Text className="text-[11px] font-bold text-slate-800">استكشف القسم</Text>
+              </TouchableOpacity>
+            </View>
+
           </View>
         </View>
 
-        <SectionTitle title="اختصارات التشغيل" />
-        <View style={styles.quickGrid}>
-          <QuickAction icon="pricetags-outline" label="المنتجات" detail={`${products.length} أصناف`} onPress={() => router.push("/sales")} />
-          <QuickAction icon="cart-outline" label="سلة البيع" detail={useCart().cart.length ? "عناصر" : "فارغة الآن"} onPress={() => router.push("/cart")} />
-          <QuickAction icon="bar-chart-outline" label="التقارير" detail="ملخص اليوم" onPress={() => router.push("/reports")} />
-       <QuickAction icon="people-outline" label="الحسابات" detail="4 عملاء" onPress={() => router.push("/accounts")} />
-<QuickAction icon="add-circle-outline" label="صنف جديد" detail="إضافة منتج" onPress={() => router.push("/add-product")} />
-<QuickAction icon="folder-open-outline" label="قسم جديد" detail="إدارة الأقسام" onPress={() => router.push("/add-category")} />
-        </View>
-
-        <SectionTitle title="الأكثر مبيعًا" action="عرض الكل" onPress={() => router.push("/sales")} />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.featuredRow}>
-          {products.slice(0, 4).map((product) => (
-            <Pressable key={product.id} style={styles.featuredCard} onPress={() => router.push("/sales")}>
-              <View style={[styles.featuredIcon, { backgroundColor: product.color }]}><Ionicons name={product.icon} size={24} color="#0F172A" /></View>
-              <Text style={styles.featuredName} numberOfLines={2}>{product.name}</Text>
-              <Text style={styles.featuredPrice}>{money(product.price)}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
       </ScrollView>
-    </SafeAreaView>
+
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#F1F5F9" },
-  scrollContent: { padding: 16, paddingBottom: 100 },
-  notice: { marginHorizontal: 16, marginTop: 8, padding: 10, borderRadius: 12, backgroundColor: "#CCFBF1", flexDirection: "row-reverse", alignItems: "center", gap: 6 },
-  noticeText: { flex: 1, color: "#0F766E", fontSize: 12, fontWeight: "700", textAlign: "right" },
-  hero: { backgroundColor: "#0F172A", borderRadius: 20, padding: 18, minHeight: 170, justifyContent: "center" },
-  heroCopy: { flex: 1 },
-  eyebrow: { color: "#94A3B8", fontSize: 10, fontWeight: "700", textAlign: "right", marginBottom: 8 },
-  heroTitle: { color: "#FFFFFF", fontSize: 22, lineHeight: 28, fontWeight: "800", textAlign: "right" },
-  heroAccent: { color: "#2DD4BF" },
-  heroBody: { color: "#CBD5E1", fontSize: 12, lineHeight: 18, textAlign: "right", marginTop: 6, maxWidth: 220 },
-  primaryButton: { backgroundColor: "#0D9488", paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, alignSelf: "flex-end", flexDirection: "row-reverse", gap: 6, alignItems: "center", marginTop: 14 },
-  primaryButtonText: { color: "#FFFFFF", fontWeight: "800", fontSize: 12 },
-  quickGrid: { flexDirection: "row-reverse", flexWrap: "wrap", gap: 10 },
-  featuredRow: { gap: 10, paddingBottom: 4 },
-  featuredCard: { width: 130, padding: 10, backgroundColor: "#FFFFFF", borderRadius: 16, borderWidth: 1, borderColor: "#E2E8F0" },
-  featuredIcon: { width: 44, height: 44, borderRadius: 14, alignItems: "center", justifyContent: "center", alignSelf: "flex-end", marginBottom: 8 },
-  featuredName: { color: "#0F172A", fontSize: 11, lineHeight: 16, fontWeight: "700", textAlign: "right", minHeight: 32 },
-  featuredPrice: { color: "#0D9488", fontSize: 12, fontWeight: "800", textAlign: "right", marginTop: 6 },
-});
