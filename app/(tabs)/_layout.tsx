@@ -1,10 +1,9 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { View, Text, StyleSheet } from "react-native";
-import { useCart } from "../../context/CartContext"; // 👈 استبدال zustand بـ Context API
+import { useCart } from "../../context/CartContext"; // 👈 استخدام Context API المعتمد لديك
 
 export default function TabLayout() {
-  // 👈 استخدام useCart بدلاً من useCartStore
   const { cart } = useCart();
   const itemCount = cart.reduce((sum, line) => sum + line.quantity, 0);
 
@@ -16,7 +15,7 @@ export default function TabLayout() {
         tabBarInactiveTintColor: "#8691A3",
         tabBarStyle: styles.bottomNav,
         tabBarLabelStyle: styles.navLabel,
-        // 👈 هذا السطر يمنع ظهور الخلفية القديمة خلف العناصر (المستطيل الأزرق)
+        // 👈 هذا السطر يمنع ظهور الخلفية القديمة خلف العناصر
         sceneContainerStyle: { backgroundColor: "#F7F8FA" },
       }}
     >
@@ -62,6 +61,15 @@ export default function TabLayout() {
         options={{
           title: "الحسابات",
           tabBarIcon: ({ color }) => <Ionicons name="people-outline" size={22} color={color} />,
+        }}
+      />
+
+      {/* 👈 التبويب الجديد المضاف: شاشة الإدارة (الأصناف، الأقسام، الوحدات، والإعدادات) */}
+      <Tabs.Screen
+        name="management"
+        options={{
+          title: "الإدارة",
+          tabBarIcon: ({ color }) => <Ionicons name="grid-outline" size={22} color={color} />,
         }}
       />
     </Tabs>
